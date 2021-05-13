@@ -29,4 +29,10 @@ else
     echo "changes_demo-project.json contains the correct commit-SHA."
 fi
 
+./peass searchcause -vms 5 -iterations 1 -warmup 0 -version $VERSION \
+	 -test de.dagere.peass.ExampleBenchmark\#testMethod \
+	 -workloadType JMH \
+	 -folder $DEMO_HOME \
+	 -executionfile $EXECUTE_FILE
 
+./peass visualizerca -data $DEMO_PROJECT_PEASS -propertyFolder results/properties_demo-project-jmh/
