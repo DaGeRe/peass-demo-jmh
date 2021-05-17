@@ -45,8 +45,7 @@ else
 fi
 
 # If minor updates to the project occur, the version name may change
-#VERSION=$(grep '"testcases" :' -B 1 $EXECUTION_FILE | head -n 1 | tr -d "\": {")
-VERSION="4eafa11f3aeace2c8f8156adf187a0d5dc393c3a"
+VERSION=$(grep '"testcases" :' -B 1 $EXECUTION_FILE | tail -2 | head -1 | tr -d "\": {")
 echo "VERSION: $VERSION"
 
 echo "::::::::::::::::::::SEARCHCAUSE:::::::::::::::::::::::::::::::::::::::"
