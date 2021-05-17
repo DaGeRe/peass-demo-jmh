@@ -13,14 +13,13 @@ DEPENDENCY_FILE=results/deps_"$DEMO_PROJECT_NAME".json
 CHANGES_DEMO_PROJECT=results/changes_"$DEMO_PROJECT_NAME".json
 PROPERTY_FOLDER=results/properties_"$DEMO_PROJECT_NAME"/
 
-# If minor updates to the project occur, the version name may change
-VERSION="1ceb377bf01db2fc23c92db490e9962942ae3ab5"
-INITIALVERSION="1e4373dd2e642ff598e567baa0f3e2325eb635de"
+RIGHT_SHA="$(cd "$DEMO_HOME" && git rev-parse HEAD)"
 
 # It is assumed that $DEMO_HOME is set correctly and PeASS has been built!
 echo ":::::::::::::::::::::SELECT:::::::::::::::::::::::::::::::::::::::::::"
 ./peass select -folder $DEMO_HOME -workloadType JMH
 
+INITIALVERSION="1e4373dd2e642ff598e567baa0f3e2325eb635de"
 INITIAL_SELECTED=$(grep "initialversion" -A 1 $DEPENDENCY_FILE | grep "\"version\"" | tr -d " \"," | awk -F':' '{print $2}')
 if [ "$INITIAL_SELECTED" != "$INITIALVERSION" ]
 then
@@ -34,10 +33,11 @@ echo ":::::::::::::::::::::MEASURE::::::::::::::::::::::::::::::::::::::::::"
 echo "::::::::::::::::::::GETCHANGES::::::::::::::::::::::::::::::::::::::::"
 ./peass getchanges -data $DEMO_PROJECT_PEASS -dependencyfile $DEPENDENCY_FILE
 
+#Check, if $CHANGES_DEMO_PROJECT contains the correct commit-SHA
 TEST_SHA=$(grep -A1 'versionChanges" : {' $CHANGES_DEMO_PROJECT | grep -v '"versionChanges' | grep -Po '"\K.*(?=")')
-if [ "$VERSION" != "$TEST_SHA" ]
+if [ "$RIGHT_SHA" != "$TEST_SHA" ]
 then
-    echo "commit-SHA ("$VERSION") is not equal to the SHA in $CHANGES_DEMO_PROJECT ("$TEST_SHA")!"
+    echo "commit-SHA ("$RIGHT_SHA") is not equal to the SHA in $CHANGES_DEMO_PROJECT ("$TEST_SHA")!"
     cat results/statistics/"$DEMO_PROJECT_NAME".json
     exit 1
 else
