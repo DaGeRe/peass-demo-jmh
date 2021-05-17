@@ -44,6 +44,10 @@ else
     echo "$CHANGES_DEMO_PROJECT contains the correct commit-SHA."
 fi
 
+# If minor updates to the project occur, the version name may change
+VERSION=$(grep '"testcases" :' -B 1 $EXECUTION_FILE | head -n 1 | tr -d "\": {")
+echo "VERSION: $VERSION"
+
 echo "::::::::::::::::::::SEARCHCAUSE:::::::::::::::::::::::::::::::::::::::"
 ./peass searchcause -vms 5 -iterations 1 -warmup 0 -version $VERSION \
 	 -test de.dagere.peass.ExampleBenchmark\#testMethod \
@@ -53,3 +57,6 @@ echo "::::::::::::::::::::SEARCHCAUSE:::::::::::::::::::::::::::::::::::::::"
 
 echo "::::::::::::::::::::VISUALIZERCA::::::::::::::::::::::::::::::::::::::"
 ./peass visualizerca -data $DEMO_PROJECT_PEASS -propertyFolder $PROPERTY_FOLDER
+
+#Check, if a slowdown is detected for innerMethod
+#Check SOURCE_METHOD_LINE
