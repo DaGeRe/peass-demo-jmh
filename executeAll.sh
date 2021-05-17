@@ -21,10 +21,10 @@ INITIALVERSION="90d82a78c2d7c15785fe54ea496fa83db3c8f873"
 echo ":::::::::::::::::::::SELECT:::::::::::::::::::::::::::::::::::::::::::"
 ./peass select -folder $DEMO_HOME -workloadType JMH
 
-initialSelected=$(grep "initialversion" -A 1 $DEPENDENCY_FILE | grep "\"version\"" | tr -d " \"," | awk -F':' '{print $2}') 
-if [ "$initialSelected" != "$INITIALVERSION" ]
+INITIAL_SELECTED=$(grep "initialversion" -A 1 $DEPENDENCY_FILE | grep "\"version\"" | tr -d " \"," | awk -F':' '{print $2}')
+if [ "$INITIAL_SELECTED" != "$INITIALVERSION" ]
 then
-	echo "Initialversion should be $INITIALVERSION, but was $initialSelected"
+	echo "Initialversion should be $INITIALVERSION, but was $INITIAL_SELECTED"
 	exit 1
 fi
 
@@ -34,10 +34,10 @@ echo ":::::::::::::::::::::MEASURE::::::::::::::::::::::::::::::::::::::::::"
 echo "::::::::::::::::::::GETCHANGES::::::::::::::::::::::::::::::::::::::::"
 ./peass getchanges -data $DEMO_PROJECT_PEASS -dependencyfile $DEPENDENCY_FILE
 
-test_sha=$(grep -A1 'versionChanges" : {' $CHANGES_DEMO_PROJECT | grep -v '"versionChanges' | grep -Po '"\K.*(?=")')
-if [ "$VERSION" != "$test_sha" ]
+TEST_SHA=$(grep -A1 'versionChanges" : {' $CHANGES_DEMO_PROJECT | grep -v '"versionChanges' | grep -Po '"\K.*(?=")')
+if [ "$VERSION" != "$TEST_SHA" ]
 then
-    echo "commit-SHA ("$VERSION") is not equal to the SHA in $CHANGES_DEMO_PROJECT ("$test_sha")!"
+    echo "commit-SHA ("$VERSION") is not equal to the SHA in $CHANGES_DEMO_PROJECT ("$TEST_SHA")!"
     cat results/statistics/"$DEMO_PROJECT_NAME".json
     exit 1
 else
