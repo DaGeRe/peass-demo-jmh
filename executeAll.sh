@@ -14,8 +14,8 @@ CHANGES_DEMO_PROJECT=results/changes_"$DEMO_PROJECT_NAME".json
 PROPERTY_FOLDER=results/properties_"$DEMO_PROJECT_NAME"/
 
 # If minor updates to the project occur, the version name may change
-VERSION="1e4373dd2e642ff598e567baa0f3e2325eb635de"
-INITIALVERSION="90d82a78c2d7c15785fe54ea496fa83db3c8f873"
+VERSION="1ceb377bf01db2fc23c92db490e9962942ae3ab5"
+INITIALVERSION="1e4373dd2e642ff598e567baa0f3e2325eb635de"
 
 # It is assumed that $DEMO_HOME is set correctly and PeASS has been built!
 echo ":::::::::::::::::::::SELECT:::::::::::::::::::::::::::::::::::::::::::"
