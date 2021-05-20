@@ -58,5 +58,17 @@ echo "::::::::::::::::::::SEARCHCAUSE:::::::::::::::::::::::::::::::::::::::"
 echo "::::::::::::::::::::VISUALIZERCA::::::::::::::::::::::::::::::::::::::"
 ./peass visualizerca -data $DEMO_PROJECT_PEASS -propertyFolder $PROPERTY_FOLDER
 
-#Check, if a slowdown is detected for innerMethod
+#Check, if a slowdown is detected for ExampleBenchmark#testMethod
+STATE=$(grep -A21 '"call" : "de.dagere.peass.ExampleBenchmark#testMethod",' results/$VERSION/de.dagere.peass.ExampleBenchmark_testMethod.js \
+    | grep '"state" : "SLOWER",' \
+    | grep -o 'SLOWER')
+if [ "$STATE" != "SLOWER" ]
+then
+    echo "State for ExampleBenchmark#testMethod in de.dagere.peass.ExampleBenchmark_testMethod.js has not the expected value SLOWER, but was $STATE!"
+    cat results/$VERSION/de.dagere.peass.ExampleBenchmark_testMethod.js
+    exit 1
+else
+    echo "Slowdown is detected for ExampleBenchmark#testMethod."
+fi
+
 #Check SOURCE_METHOD_LINE
