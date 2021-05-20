@@ -71,4 +71,13 @@ else
     echo "Slowdown is detected for ExampleBenchmark#testMethod."
 fi
 
-#Check SOURCE_METHOD_LINE
+SOURCE_METHOD_LINE=$(grep "ExampleBenchmark.testMethod_" results/$VERSION/de.dagere.peass.ExampleBenchmark_testMethod.js -A 3 | head -n -3 | grep innerMethod)
+if [[ "$SOURCE_METHOD_LINE" != *"innerMethod();" ]]
+then
+    echo "Line could not be detected - source reading probably failed."
+    echo "Line: "
+    echo "SOURCE_METHOD_LINE: $SOURCE_METHOD_LINE"
+    exit 1
+else
+    echo "SOURCE_METHOD_LINE is correct."
+fi
