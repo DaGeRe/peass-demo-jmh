@@ -2,7 +2,7 @@
 DEMO_PROJECT_NAME=demo-project-jmh
 
 tar -xf "$DEMO_PROJECT_NAME".tar.xz
-git clone --branch jmh https://github.com/DaGeRe/peass.git && \
+git clone --branch develop https://github.com/DaGeRe/peass.git && \
 	cd peass && \
 	./mvnw clean install -DskipTests=true -V
 
