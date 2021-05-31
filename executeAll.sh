@@ -4,7 +4,7 @@ DEMO_PROJECT_NAME=demo-project-jmh
 tar -xf "$DEMO_PROJECT_NAME".tar.xz
 git clone --branch develop https://github.com/DaGeRe/peass.git && \
 	cd peass && \
-	./mvnw clean install -DskipTests=true -V
+	./mvnw clean install -DskipTests -V
 
 DEMO_HOME=$(pwd)/../$DEMO_PROJECT_NAME
 DEMO_PROJECT_PEASS=../"$DEMO_PROJECT_NAME"_peass
@@ -27,8 +27,16 @@ then
 	exit 1
 fi
 
+if [ ! -f "$EXECUTION_FILE" ]
+then
+    echo "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+    echo "$EXECUTION_FILE could not be found!"
+    echo "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+    exit 1
+fi
+
 echo ":::::::::::::::::::::MEASURE::::::::::::::::::::::::::::::::::::::::::"
-./peass measure -executionfile $EXECUTION_FILE -folder $DEMO_HOME -workloadType JMH -iterations 1 -warmup 0 -repetitions 1 -vms 2
+./peass measure -executionfile $EXECUTION_FILE -folder $DEMO_HOME -workloadType JMH -vms 5 -iterations 5 -warmup 5 -repetitions 5
 
 echo "::::::::::::::::::::GETCHANGES::::::::::::::::::::::::::::::::::::::::"
 ./peass getchanges -data $DEMO_PROJECT_PEASS -dependencyfile $DEPENDENCY_FILE
@@ -49,11 +57,11 @@ VERSION=$(grep '"testcases" :' -B 1 $EXECUTION_FILE | tail -2 | head -1 | tr -d 
 echo "VERSION: $VERSION"
 
 echo "::::::::::::::::::::SEARCHCAUSE:::::::::::::::::::::::::::::::::::::::"
-./peass searchcause -vms 5 -iterations 1 -warmup 0 -version $VERSION \
-	 -test de.dagere.peass.ExampleBenchmark\#testMethod \
-	 -workloadType JMH \
-	 -folder $DEMO_HOME \
-	 -executionfile $EXECUTION_FILE
+./peass searchcause -vms 3 -iterations 5 -warmup 1 -repetitions 5 -version $VERSION \
+    -workloadType JMH \
+    -test de.dagere.peass.ExampleBenchmark\#testMethod \
+    -folder $DEMO_HOME \
+    -executionfile $EXECUTION_FILE
 
 echo "::::::::::::::::::::VISUALIZERCA::::::::::::::::::::::::::::::::::::::"
 ./peass visualizerca -data $DEMO_PROJECT_PEASS -propertyFolder $PROPERTY_FOLDER
@@ -71,7 +79,9 @@ else
     echo "Slowdown is detected for ExampleBenchmark#testMethod."
 fi
 
-SOURCE_METHOD_LINE=$(grep "ExampleBenchmark.testMethod_" results/$VERSION/de.dagere.peass.ExampleBenchmark_testMethod.js -A 3 | head -n -3 | grep innerMethod)
+SOURCE_METHOD_LINE=$(grep "ExampleBenchmark.testMethod_" results/$VERSION/de.dagere.peass.ExampleBenchmark_testMethod.js -A 3 \
+    | head -n -3 \
+    | grep innerMethod)
 if [[ "$SOURCE_METHOD_LINE" != *"innerMethod();" ]]
 then
     echo "Line could not be detected - source reading probably failed."
