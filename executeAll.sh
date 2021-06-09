@@ -26,7 +26,7 @@ VERSION="$(cd "$DEMO_HOME" && git rev-parse HEAD)"
 echo ":::::::::::::::::::::SELECT:::::::::::::::::::::::::::::::::::::::::::"
 ./peass select -folder $DEMO_HOME -workloadType JMH
 
-INITIALVERSION="1e4373dd2e642ff598e567baa0f3e2325eb635de"
+INITIALVERSION="6cbbbd267a3604bfd16bac02a708e6ff2ccf8d20"
 INITIAL_SELECTED=$(grep "initialversion" -A 1 $DEPENDENCY_FILE | grep "\"version\"" | tr -d " \"," | awk -F':' '{print $2}')
 if [ "$INITIAL_SELECTED" != "$INITIALVERSION" ]
 then
@@ -62,33 +62,32 @@ fi
 echo "::::::::::::::::::::SEARCHCAUSE:::::::::::::::::::::::::::::::::::::::"
 ./peass searchcause -vms 3 -iterations 5 -warmup 1 -repetitions 5 -version $VERSION \
     -workloadType JMH \
-    -test de.dagere.peass.ExampleBenchmark\#testMethod \
+    -test de.dagere.peass.ExampleBenchmarkClazz\#calleeMethod \
     -folder $DEMO_HOME \
     -executionfile $EXECUTION_FILE
 
 echo "::::::::::::::::::::VISUALIZERCA::::::::::::::::::::::::::::::::::::::"
 ./peass visualizerca -data $DEMO_PROJECT_PEASS -propertyFolder $PROPERTY_FOLDER
 
-#Check, if a slowdown is detected for ExampleBenchmark#testMethod
-STATE=$(grep -A21 '"call" : "de.dagere.peass.ExampleBenchmark#testMethod",' results/$VERSION/de.dagere.peass.ExampleBenchmark_testMethod.js \
+#Check, if a slowdown is detected for Callee#innerMethod
+STATE=$(grep -A21 '"call" : "de.dagere.peass.Callee#innerMethod",' results/$VERSION/de.dagere.peass.ExampleBenchmarkClazz_calleeMethod.js \
     | grep '"state" : "SLOWER",' \
     | grep -o 'SLOWER')
 if [ "$STATE" != "SLOWER" ]
 then
-    echo "State for ExampleBenchmark#testMethod in de.dagere.peass.ExampleBenchmark_testMethod.js has not the expected value SLOWER, but was $STATE!"
-    cat results/$VERSION/de.dagere.peass.ExampleBenchmark_testMethod.js
+    echo "State for Callee#innerMethod in de.dagere.peass.ExampleBenchmarkClazz_calleeMethod.js has not the expected value SLOWER, but was $STATE!"
+    cat results/$VERSION/de.dagere.peass.ExampleBenchmarkClazz_calleeMethod.js
     exit 1
 else
-    echo "Slowdown is detected for ExampleBenchmark#testMethod."
+    echo "Slowdown is detected for Callee#innerMethod."
 fi
 
-SOURCE_METHOD_LINE=$(grep "ExampleBenchmark.testMethod_" results/$VERSION/de.dagere.peass.ExampleBenchmark_testMethod.js -A 3 \
-    | head -n -3 \
+SOURCE_METHOD_LINE=$(grep "Callee.method1_" results/$VERSION/de.dagere.peass.ExampleBenchmarkClazz_calleeMethod.js -A 3 \
+    | head -n 3 \
     | grep innerMethod)
 if [[ "$SOURCE_METHOD_LINE" != *"innerMethod();" ]]
 then
     echo "Line could not be detected - source reading probably failed."
-    echo "Line: "
     echo "SOURCE_METHOD_LINE: $SOURCE_METHOD_LINE"
     exit 1
 else
