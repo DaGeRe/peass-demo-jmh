@@ -26,7 +26,7 @@ VERSION="$(cd "$DEMO_HOME" && git rev-parse HEAD)"
 echo ":::::::::::::::::::::SELECT:::::::::::::::::::::::::::::::::::::::::::"
 ./peass select -folder $DEMO_HOME -workloadType JMH
 
-INITIALVERSION="6cbbbd267a3604bfd16bac02a708e6ff2ccf8d20"
+INITIALVERSION="db0217b4aa32236d3fea5f88afa24069dbe8dba3"
 INITIAL_SELECTED=$(grep "initialversion" -A 1 $DEPENDENCY_FILE | grep "\"version\"" | tr -d " \"," | awk -F':' '{print $2}')
 if [ "$INITIAL_SELECTED" != "$INITIALVERSION" ]
 then
