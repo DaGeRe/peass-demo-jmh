@@ -3,7 +3,7 @@
 DEMO_PROJECT_NAME=demo-project-jmh
 
 if [ "$#" -ne 1 ]; then
-	branch="master"
+	branch="main"
 else
 	branch=$1
 fi
